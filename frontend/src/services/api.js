@@ -1,0 +1,20 @@
+import axios from "axios";
+
+// Central axios instance for talking to our backend
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+});
+
+// Attach the JWT (if we have one) to every outgoing request
+api.interceptors.request.use((config) => {
+  const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+    const { token } = JSON.parse(storedUser);
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
+
+export default api;
